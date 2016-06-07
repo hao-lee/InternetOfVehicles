@@ -2,7 +2,6 @@ package algorithm;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -16,128 +15,76 @@ public class MapCaching {
 	int i = 3;// 3个节点
 
 	public static void main(String[] args) {
-		// new MapCaching().map_caching();
+		new MapCaching().map_caching();
 	}
 
 	/**
-	 * 随机概率构造函数
-	 */
-	public MapCaching(int[] probility_Data_I, int[] lodeData_X, int[] lodeData_Y) {
-		super();
-		ProbabilityInterface proIf = new ProbabilityImp(probility_Data_I,
-				lodeData_X, lodeData_Y);
-		phiList = proIf.getPhiList(k, i);
-	}
-
-	/**
-	 * 文件概率构造函数
+	 * 构造函数，从文件中读取数据计算
 	 */
 	public MapCaching() {
-		super();
 		int[] probility_Data_I = {}; // 存放路过i节点的次数
 		int[] lodeData_X = {}; // 存放数据。每个节点下载chunk的个数Xi
 		int[] lodeData_Y = {}; // 存放数据。每个节点下载的最后一个chunk的编号Yi
 		/* 调用接口函数，生成新的概率 */
+		FileInputStream fileInputStream = null;
 		BufferedReader bf = null;
+		String line;
 		try {
-			FileInputStream data_i = new FileInputStream("./IOFile/DATA_I.txt");
-			bf = new BufferedReader(new InputStreamReader(data_i));
-			String line;
+			
+			//读取DATA_I.txt
+			fileInputStream = new FileInputStream("./IOFile/DATA_I.txt");
+			bf = new BufferedReader(new InputStreamReader(fileInputStream));
 			System.out.println("读取路过i节点次数！");
 			while ((line = bf.readLine()) != null) {
 				probility_Data_I = String2Int(line);
 			}
-		} catch (FileNotFoundException e) {
-			System.out.println("打开路过节点次数文件失败！");
-			e.printStackTrace();
+			
+			if (probility_Data_I.length == 0 || probility_Data_I == null) {
+				System.out.println("经过i点的次数为空！");
+				return;
+			}
+			
+			//读取lodeData_X.txt
+			fileInputStream = new FileInputStream("./IOFile/lodeData_X.txt");
+			bf = new BufferedReader(new InputStreamReader(fileInputStream));
+			int len = probility_Data_I.length;
+			System.out.println("读取第i节点下载chunk的个数Xi");
+			while ((line = bf.readLine()) != null) {
+				lodeData_X = String2Int(line);
+				if (lodeData_X.length != len) {
+					System.out.println("Waring:长度不符！");
+					break;
+				}
+			}
+			
+			//读取lodeData_Y.txt
+			fileInputStream = new FileInputStream("./IOFile/lodeData_Y.txt");
+			bf = new BufferedReader(new InputStreamReader(fileInputStream));
+			len = probility_Data_I.length;
+			System.out.println("第i个节点下载的最后一个chunk的编号Yi");
+			while ((line = bf.readLine()) != null) {
+				lodeData_Y = String2Int(line);
+				if (lodeData_Y.length != len) {
+					System.out.println("Waring:输入的每个节点下载最后一个节点的数据和输入节点数不符！");
+					break;
+				}
+			}
+			
 		} catch (IOException e) {
-			System.out.println("读取路过节点次数文件失败！");
 			e.printStackTrace();
 		} finally {
-			if (bf != null) {
-				try {
-					bf.close();
-				} catch (IOException e1) {
-					System.out.println("DATA_I字节流关闭失败！");
-				}
-			}
+			try {
+				if(bf != null) bf.close();
+				if(fileInputStream != null) fileInputStream.close();
+			} catch (Exception e2) {e2.printStackTrace();}
 		}
 
-		// lodeData_X.txt
-		try {
-			if (probility_Data_I.length == 0 || probility_Data_I == null) {
-				System.out.println("经过i点的次数为空！");
-			} else {
-				FileInputStream fio = new FileInputStream(
-						"./IOFile/lodeData_X.txt");
-				bf = new BufferedReader(new InputStreamReader(fio));
-				String line;
-				int len = probility_Data_I.length;
-				int i = 0;
-				System.out.println("读取第i节点下载chunk的个数Xi");
-
-				while ((line = bf.readLine()) != null) {
-					
-					lodeData_X = String2Int(line);
-					if (lodeData_X.length != len) {
-						System.out.println("Waring:长度不符！");
-						break;
-					}
-				}
-
-			}
-		} catch (Exception e) {
-			System.out.println("打开在X点下载块数文件失败！");
-			e.printStackTrace();
-		} finally {
-			if (bf != null) {
-				try {
-					bf.close();
-				} catch (IOException e1) {
-					System.out.println("Lode_X字节流关闭失败！");
-				}
-			}
-		}
-
-		// lodeData_Y.txt
-		try {
-			if (probility_Data_I.length == 0 || probility_Data_I == null) {
-				System.out.println("经过i点的次数为空！");
-			} else {
-				FileInputStream fio = new FileInputStream(
-						"./IOFile/lodeData_Y.txt");
-				bf = new BufferedReader(new InputStreamReader(fio));
-				String line;
-				int len = probility_Data_I.length;
-				int i = 0;
-				System.out.println("第i个节点下载的最后一个chunk的编号Yi");
-
-				while ((line = bf.readLine()) != null) {
-				
-					lodeData_Y = String2Int(line);
-					if (lodeData_Y.length != len) {
-						System.out
-								.println("Waring:输入的每个节点下载最后一个节点的数据和输入节点数不符！");
-						break;
-					}
-				}
-			}
-		} catch (Exception e) {
-			System.out.println("打开在节点下载最后一个块的数据文件失败！");
-			e.printStackTrace();
-		} finally {
-			if (bf != null) {
-				try {
-					bf.close();
-				} catch (IOException e1) {
-					System.out.println("Lode_Y字节流关闭失败！");
-				}
-			}
-		}
-
-		ProbabilityInterface proIf = new ProbabilityImp(probility_Data_I,
-				lodeData_X, lodeData_Y);
-		phiList = proIf.getPhiList(k, i);
+		/*
+		 * 概率生成
+		 * */
+		ProbabilityGenerator probabilityGenerator = new 
+				ProbabilityGenerator(probility_Data_I,lodeData_X, lodeData_Y);
+		phiList = probabilityGenerator.getPhiList(k, i);
 	}
 
 	private int[] String2Int(String line) {
