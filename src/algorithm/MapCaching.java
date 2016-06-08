@@ -86,7 +86,11 @@ public class MapCaching {
 				ProbabilityGenerator(probility_Data_I,lodeData_X, lodeData_Y);
 		phiList = probabilityGenerator.getPhiList(k, i);
 	}
-
+	/**
+	 * 把String解析成int类型的数组
+	 * @param line
+	 * @return
+	 */
 	private int[] String2Int(String line) {
 		String tmp[] = line.trim().split(",");
 		int len = tmp.length;
