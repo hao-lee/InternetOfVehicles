@@ -11,8 +11,8 @@ public class MapCaching {
 	ArrayList<ArrayList<Double>> phiList = null;
 	ArrayList<ArrayList<Integer>> resList = new ArrayList<>();
 
-	int k = 15;// 15块数据(gz_05/14)
-	int i = 3;// 3个节点
+	int k = 15;	// 15块数据(gz_05/14)
+	int i = 3;	// 3个节点
 
 	public static void main(String[] args) {
 		new MapCaching().map_caching();
@@ -130,9 +130,10 @@ public class MapCaching {
 			resList.add(sList);// 每测试一个块k，都会在resList中加入一行
 
 		}// for
-			// 循环结束后，resList就是结果的二维列表
-		for (int local = 0; local < resList.size(); local++)
-			System.out.println(resList.get(local).toString());
+		//循环结束后，resList就是结果的二维列表
+		for (int i = 0; i < resList.size(); i++)
+			System.out.println("第"+i+"块"+"缓存于"+
+					resList.get(i).toString()+"节点");
 		return;
 	}
 
