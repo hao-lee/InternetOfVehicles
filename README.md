@@ -1,13 +1,37 @@
+##为什么要用git和github
+多人协作必须要使用点工具才行，不然很容易混乱。我们使用git版本控制工具和github代码托管平台。其中git是比svn先进的代码版本控制工具，github是远程代码仓库托管平台，相当于一个免费远程服务器，借助github可以实现多人同步开发。
+
 #使用说明
 源代码使用Git版本管理工具，采用GitHub托管平台。
-在操作系统上装好Git for Windows后，打开Git Bash切换到你的Eclipse工作目录，然后使用如下命令克隆本仓库文件。
+在电脑上装好Git for Windows，下载地址[见此](https://git-scm.com/download/)。
 
-	git clone git@github.com:kerneldeveloper/InternetOfVehicles.git
+##如何多人协作
+为了简化流程，我直接把你们加入collaborator，这样你们可以直接拥有我github代码仓库的写入权限。
+然后参阅**第1篇教程**将这个项目clone到你的eclipse工程目录里。然后就是做修改和提交了，这些提交和修改都是在你的本地代码仓库里进行的，如果觉得修改的差不多了，可以用git push命令推送到我们的代码仓库。
 
-如果需要Git速成，可以打开下面的网址看一下廖学峰的教程，这是目前网络上最好的入门资料。
-http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/
+这样就可以多人合作了，每一次提交都会有commit记录，如果出现问题可以随时回退，用了git就不必担心代码被修改混乱了，也不必担心协作冲突。所以，有了一定的修改就可以git commit，多commit没坏处。
 
-*如果想要详细的系统的学习Git，目前最好的书籍是《Version Control with Git, 2nd Edition》，中文版名字叫《Git版本控制》（第二版，影印版）。图书馆有这本书。*
+每个人的代码修改完需要及时push到github远程仓库，而且每个人都要保持本地代码库和远程代码库同步。
+你们的开发流程是这样的：
+
+- 把仓库同步到电脑本地Eclipse目录。
+	>git fetch
+- 将同步下来的“修改”都合并到本地分支
+	>git checkout develop
+	>
+ 	>git merge origin/develop
+- 着手修改代码，开始工作。
+- 修改完毕一些功能，
+	>git add .
+	>
+	>git commit -m "本次提交的说明：做了哪些更新"
+	>
+	>git push
+
+然后你的修改就同步到github远程仓库了，我们的操作也是这样，所以就能在开始我们的工作前获取到最新的代码。
+
+[第1篇教程](http://www.oschina.net/question/54100_167919?sort=time)
+
 
 #分支与合并
 
@@ -22,14 +46,14 @@ http://blog.csdn.net/mad1989/article/details/16885569
 
 **不要害怕冲突，Git诞生的目的就是为了解决协作开发所导致的冲突。**
 
-##如何多人协作
-首先在github上fork我的项目，你会得到一个同样的项目，不过这是你自己的而非我的，但代码是相同的。然后你将你参阅[这个文章](http://www.oschina.net/question/54100_167919?sort=time)将你的项目clone到你的eclipse工程目录里。然后就是做修改和提交了，这些提交都是在你自己的仓库里进行的，如果觉得修改的差不多了，可以在github给我的项目提交pull request，具体[教程见此](http://www.cnblogs.com/astwish/articles/3548844.html)。
-我会在合适的时机将你们的代码并入我的仓库，然后你们依然参见上面的[教程](http://www.cnblogs.com/astwish/articles/3548844.html)，这个教程的最后有说明如何与我的仓库保持同步。
-
-这样就可以多人合作了，每一次提交都会有commit记录，如果出现问题可以随时回退，用了git就不必担心代码被修改混乱了，也不必担心协作冲突。
-
 #Tricks
 每当做完大的修改或完成了一个功能就应该做一次提交（git commit），这样如果在编程中发现本次修改出现了重大问题，需要放弃现在的思路，可以随时进行版本回退。版本回退是Git最强大的功能。
 
 
 ###遇到其他问题可以随时问我。
+
+##参考资料：
+如果需要Git速成，可以打开下面的网址看一下廖学峰的教程，这是目前网络上最好的入门资料。
+http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/
+
+*如果想要详细的系统的学习Git，目前最好的书籍是《Version Control with Git, 2nd Edition》，中文版名字叫《Git版本控制》（第二版，影印版）。图书馆有这本书。*
