@@ -6,11 +6,16 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.Iterator;
 import java.util.Vector;
 
 import org.junit.Test;
 
 public class FileIO {
+	
+	public FileIO() {
+		// TODO Auto-generated constructor stub
+	}
 	/**
 	 * 
 	 * @author chenzewei
@@ -18,7 +23,7 @@ public class FileIO {
 	 * @return 
 	 * @return
 	 */
-	public  Integer[] readFile(String filePath) {
+	public  int[] readFile(String filePath) {
 		Vector<Integer> res = new Vector<Integer>();
 		
 		FileInputStream fileInputStream = null;
@@ -48,9 +53,22 @@ public class FileIO {
 			}
 		}
 		
-		return res.toArray(new Integer[res.size()]);
+		return vector2Array(res);
+	}
+	
+	public int[] vector2Array(Vector<Integer> res) {
+		// TODO Auto-generated method stub
+		int array[] = new int[res.size()];
+		int index = 0;
+		for (Iterator iterator = res.iterator(); iterator.hasNext();) {
+			Integer integer = (Integer) iterator.next();
+			array[index++] = integer;
+		}
+		return array;
 	}
 	/**
+	 * 数据写入文件
+	 * 返回值：1 成功，0失败
 	 *@author chenzewei
 	 *@param 
 	 */
@@ -110,14 +128,26 @@ public class FileIO {
 		return res;
 	}
 	
+	/**
+	 *测试readfile()函数
+	 * @param void
+	 * @return
+	 * 用法：如下
+	 */
 	@Test
 	public void testreadfile(){
-		Integer[] a = new FileIO().readFile("./IOFile/test.txt");
+		int[] a = new FileIO().readFile("./IOFile/test.txt");
 		for (int i = 0; i < a.length; i++) {
 			System.out.println(a[i]);
 		}
 		System.out.println();
 	}
+	/**
+	 *测试savefile()函数
+	 * @param void
+	 * @return
+	 * 用法：如下
+	 */
 	@Test
 	public void testsaveFile(){
 		int a[] = {1,3,5,7,8};
