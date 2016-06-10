@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import util.FileIO;
+
 public class MapCaching {
 
 	ArrayList<ArrayList<Double>> phiList = null;
@@ -14,6 +16,11 @@ public class MapCaching {
 	int k = 15;	// 15块数据(gz_05/14)
 	int i = 3;	// 3个节点
 
+	//节点最大chunk容量
+	int MAX_Chunk_Capacity = 10;
+	//每个节点对应当前存量
+	int[] currentQuantity = new int[i];
+	
 	public static void main(String[] args) {
 		new MapCaching().map_caching();
 	}
@@ -25,58 +32,19 @@ public class MapCaching {
 		int[] probility_Data_I = {}; // 存放路过i节点的次数
 		int[] lodeData_X = {}; // 存放数据。每个节点下载chunk的个数Xi
 		int[] lodeData_Y = {}; // 存放数据。每个节点下载的最后一个chunk的编号Yi
+		
+		FileIO fileIO = new FileIO();
 		/* 调用接口函数，生成新的概率 */
-		FileInputStream fileInputStream = null;
-		BufferedReader bf = null;
 		String line;
 		try {
-			
 			//读取DATA_I.txt
-			fileInputStream = new FileInputStream("./IOFile/DATA_I.txt");
-			bf = new BufferedReader(new InputStreamReader(fileInputStream));
-			System.out.println("读取路过i节点次数！");
-			while ((line = bf.readLine()) != null) {
-				probility_Data_I = String2Int(line);
-			}
-			
-			if (probility_Data_I.length == 0 || probility_Data_I == null) {
-				System.out.println("经过i点的次数为空！");
-				return;
-			}
-			
+			probility_Data_I = fileIO.readFile("./IOFile/Data_I.txt");
 			//读取lodeData_X.txt
-			fileInputStream = new FileInputStream("./IOFile/lodeData_X.txt");
-			bf = new BufferedReader(new InputStreamReader(fileInputStream));
-			int len = probility_Data_I.length;
-			System.out.println("读取第i节点下载chunk的个数Xi");
-			while ((line = bf.readLine()) != null) {
-				lodeData_X = String2Int(line);
-				if (lodeData_X.length != len) {
-					System.out.println("Waring:长度不符！");
-					break;
-				}
-			}
-			
+			lodeData_X = fileIO.readFile("./IOFile/lodeData_X.txt");
 			//读取lodeData_Y.txt
-			fileInputStream = new FileInputStream("./IOFile/lodeData_Y.txt");
-			bf = new BufferedReader(new InputStreamReader(fileInputStream));
-			len = probility_Data_I.length;
-			System.out.println("第i个节点下载的最后一个chunk的编号Yi");
-			while ((line = bf.readLine()) != null) {
-				lodeData_Y = String2Int(line);
-				if (lodeData_Y.length != len) {
-					System.out.println("Waring:输入的每个节点下载最后一个节点的数据和输入节点数不符！");
-					break;
-				}
-			}
-			
-		} catch (IOException e) {
+			lodeData_Y = fileIO.readFile("./IOFile/lodeData_Y.txt");
+		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				if(bf != null) bf.close();
-				if(fileInputStream != null) fileInputStream.close();
-			} catch (Exception e2) {e2.printStackTrace();}
 		}
 
 		/*
@@ -124,12 +92,22 @@ public class MapCaching {
 			}
 			ArrayList<Integer> sList = new ArrayList<>();
 			while (!fListIsEmpty(fList) && pk < threshold) {
+				
 				ArrayList<Double> ret = getMaxValue(fList);
+				
 				double pTop = ret.get(0);
 				int iTop = (int) (ret.get(1).doubleValue());
-				fList.set(iTop, (double) -1);
-				pk = pk + pTop;
-				sList.add(iTop);
+				//iTop节点已经存满
+				if( nodeIsFull(iTop)){   
+					fList.set(iTop, (double) -1);
+				}else{
+				//iTop节点没有存满
+					fList.set(iTop, (double) -1);
+					pk = pk + pTop;
+					sList.add(iTop);
+					currentQuantity[iTop]++;
+				}
+				
 			}
 			resList.add(sList);// 每测试一个块k，都会在resList中加入一行
 
@@ -140,7 +118,19 @@ public class MapCaching {
 					resList.get(i).toString()+"节点");
 		return;
 	}
-
+	
+	
+	/**
+	 * 查看对应iTop节点是否已经存满
+	 * @param iTop
+	 *		当前下载概率最高的节点
+	 * @return
+	 */
+	private boolean nodeIsFull(int iTop) {
+		//if(iTop > i) //如果超出边界？
+		return currentQuantity[iTop] == MAX_Chunk_Capacity ? true:false;
+	}
+	
 	/**
 	 * 每当从fList取出一个当前的最大概率，为了不破坏顺序，不直接将该概率删除，而是赋值为-1
 	 * 当所有元素都为-1时就可以认为fList所有概率都被取出，列表空了，返回true
