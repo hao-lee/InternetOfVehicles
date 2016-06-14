@@ -20,7 +20,10 @@ public class ProbabilityGenerator implements ProbabilityInterface {
 	
 	int[] lodeData_X;  //每个节点下载chunk的个数Xi（外部传参）
 	int[] lodeData_Y; //每个节点下载的最后一个chunk的编号Yi（外部传参）
-	
+	/*
+	 * 试验修改
+	 * 
+	 * */
 	/**
 	 * 用于传入初始化数据
 	 * @param int[][] lodeData_X 第i节点下载chunk的个数Xi
